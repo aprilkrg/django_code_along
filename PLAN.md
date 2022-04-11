@@ -838,7 +838,7 @@ def show_create(request):
 
 # CHECK IN: can you create a new show via the form, and does it have a user_id in the db?
 
-# Current Code Base
+## Current Code Base
 
 In `main_app/urls.py`:
 ```python
@@ -963,6 +963,12 @@ In `main_app/views.py` change this line:
 shows = Show.objects.filter(user_id=request.user.id)
 ```
 ![Users created shows](./images/filter_by_user.png)
+
+#
+
+# CHECK IN: can you filter shows on the profile by the user who created them?
+
+## Edit/Delete only users resources
 
 
 

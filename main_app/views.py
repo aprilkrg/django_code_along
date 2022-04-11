@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Show
 from .form import ShowForm
@@ -39,9 +39,12 @@ def show_edit(request, pk):
         form = ShowForm(instance=show)
     return render(request, 'show_form.html', {'form': form})
 
-@login_required(login_url='/login/')
 def show_delete(request, pk):
-    Show.objects.get(pk=pk).delete()
+    # Show.objects.get(pk=pk).delete()
+    show = Show.objects.get(pk=pk)
+    if show.user_id == request.user.id:
+        show.delete()
+    print(show,request.user, 'REQUEST')
     return redirect('shows')
 
 def login_page(request):
