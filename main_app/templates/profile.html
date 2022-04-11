@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h2>Profile page</h2>
+    <h4>{{ user.username }}</h4>
+    <ul>
+        {% for show in shows %}
+        <li>
+            <a href="{{ show.id }}/edit">
+                {{ show.title }},
+            </a>
+            {{ show.review }}/3
+            <a href="{{ show.id }}/delete">X</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
