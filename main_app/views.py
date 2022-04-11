@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 
 from .models import Show
-from .form import ShowForm
+from .form import ShowForm, SignUpForm
 
 def home(request):
     print('HOME PAGE')
@@ -39,6 +39,7 @@ def show_edit(request, pk):
         form = ShowForm(instance=show)
     return render(request, 'show_form.html', {'form': form})
 
+@login_required(login_url='/login/')
 def show_delete(request, pk):
     # Show.objects.get(pk=pk).delete()
     show = Show.objects.get(pk=pk)
@@ -68,3 +69,15 @@ def profile_show(request):
         else:
             print("SOMETHING WENT WRONG WITH LOGIN")
             return redirect('login_page')
+
+def register(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid:
+            user = form.save()
+            user = authenticate(username=user.username, password=user.password)
+            login(request, user)
+            return redirect('profile')
+    else:
+        form = SignUpForm()
+    return render(request, 'register.html', {'form': form})

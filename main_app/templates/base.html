@@ -18,6 +18,7 @@
                     <li><a href="{% url 'show_create_form' %}">New Show</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
+                    <li><a href="{% url 'signup_form' %}">Signup</a></li>
                     <li><a href="{% url 'login_page' %}">Login</a></li>
                 {% endif %}
             </ul>

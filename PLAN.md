@@ -32,7 +32,10 @@ You need to activate the env before you do any work on this project! Every time!
 *You can tell when you're in the activated environment because your terminal should show "(.env)" in the prompt.*
 #
 
-Let's install some packages we'll need: `pip3 install django`
+Let's install some packages we'll need: 
+```bash
+pip3 install django
+```
 
 "pip3" is the package manager we'll use for python, like "npm" was the package manager for our javascript projects.
 
@@ -970,14 +973,96 @@ shows = Show.objects.filter(user_id=request.user.id)
 
 ## Edit/Delete only users resources
 
+In `main_app/views.py`:
+```python
+def show_delete(request, pk):
+    # Show.objects.get(pk=pk).delete()
+    show = Show.objects.get(pk=pk)
+    if show.user_id == request.user.id:
+        show.delete()
+    print(show,request.user, 'REQUEST')
+    return redirect('shows')
+```
+
+#
+
+## User Registration
+
+In `main_app/form.py`:
+```python
+# add after imports
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+# add after Show form
+class SignUpForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2', )
+```
+In `main_app/views.py`:
+```python
+# add to import
+from .form import ShowForm, SignUpForm
+# add after 'profile_show'
+def register(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid:
+            user = form.save()
+            user = authenticate(username=user.username, password=user.password)
+            login(request, user)
+            return redirect('profile')
+    else:
+        form = SignUpForm()
+    return render(request, 'register.html', {'form': form})
+```
+Create 'register.html':
+```bash
+touch main_app/templates/register.html
+```
+In `main_app/templates/register.html`:
+```html
+{% extends 'base.html' %}
+{% block content %}
+<section>
+    <h1>Signup</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</section>
+{% endblock %}
+```
+In `main_app/urls.py`:
+```python
+urlpatterns = [
+    # add after 'logout'
+    path('signup/', views.register, name='signup_form'),
+]
+```
+
+Add a link to the signup route.
+
+In `main_app/templates/base.html`:
+```html
+<li><a href="{% url 'signup_form' %}">Signup</a></li>
+<li><a href="{% url 'login_page' %}">Login</a></li>
+```
+
+Try to create a new user, and it's entered in the database, but run into error
+
+![Signup error](./images/signup_error.png)
 
 
 <!-- 
 ICEBOX
-[] only user can edit or delete their made shows
-[] user registration
+[] homepage
+[] css
+[] user registration customization (email)
 [] email user after registration  (Email Docs)[https://docs.djangoproject.com/en/4.0/topics/email/]
-[] user edit
+[] only user can edit their made shows
+[] user profile edit
 [] create show_creator model
 [] associate show_creator with show 
 -->
