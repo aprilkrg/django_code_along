@@ -143,14 +143,14 @@ python3 manage.py runserver
 
 ## Create the route
 
-A route's purpose is to connect an HTTP request to it's corresponding code. In contrast to Express, Django's routing matches the URL of the request and ignores the HTTP verb. Django defines it's routes in the "urls.py" file, but since this is in the main project, and it's a Django best practice for each app it's own routes, and include that app in the "urls.py".
+A route's purpose is to connect an HTTP request to it's corresponding code. In contrast to Express, Django's routing matches the URL of the request and ignores the HTTP verb. Django defines it's routes in the "urls.py" file, but since this is in the main project, and it's a Django best practice for each app to control it's own routes, and include that app in the "urls.py".
 
 Create a file for "main_app"'s urls: 
 ```bash
 touch main_app/urls.py
 ```
 
-Import the include keyword, and add the path to main_app urls in "show_collector_project/urls.py":
+Import the include keyword from `django.urls`, and add the path to main_app urls in "show_collector_project/urls.py":
 
 ![Url Patterns](./images/urlpatterns.png)
 This will mount any routes created in "main_app".
@@ -442,7 +442,7 @@ In `main_app/urls.py`:
 ```python
 urlpatterns = [
     # add after 'shows/' url
-    path('shows/add', views.show_create, name='show_create_form')
+    path('shows/add/', views.show_create, name='show_create_form'),
 ]
 ```
 Complete the link in "shows_list.html" by adding a href attribute to the url we just made.
@@ -686,8 +686,9 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 ]
 ```
-In `main_app/views.py` these are the views for login, logout, and profile:
+In `main_app/views.py`:
 ```python
+from django.contrib.auth import authenticate, login, logout
 # add after 'profile_show'
 def logout_view(request):
     logout(request)
@@ -719,7 +720,7 @@ Adding the decorator to these views would result in an error if we navigate to t
 
 ## Change profile page
 
-*We could probably use some partials or template inheritance to populate the 'shows_list.html' in the 'profile.html', but we'll cheat and just copy over the code in the html.*
+*We could probably use some partials or template inheritance to populate the 'shows_list.html' in the 'profile.html', but we'll just copy over the code in the html.*
 
 [template inheritance docs](https://docs.djangoproject.com/en/4.0/ref/templates/language/#template-inheritance-1)
 
@@ -959,9 +960,9 @@ class ShowForm(forms.ModelForm):
         fields = ('title', 'genre', 'premiere_date', 'review')
 ```
 
-Now we're going to change the view for the profile page, so that we're filtering shows by user's id.
+Now we're going to change the view for the profile page, so that we're filtering shows by user's id instead of the hardcoded 'O'.
 
-In `main_app/views.py` change this line:
+In `main_app/views.py` change this line in profile_show:
 ```python
 shows = Show.objects.filter(user_id=request.user.id)
 ```
@@ -1054,7 +1055,7 @@ Try to create a new user, and it's entered in the database, but run into error
 
 ![Signup error](./images/signup_error.png)
 
-
+The database confirms the user creation, need to figure out what's going wrong here.
 <!-- 
 ICEBOX
 [] homepage
