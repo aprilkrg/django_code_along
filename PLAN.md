@@ -998,7 +998,7 @@ from django.contrib.auth.models import User
 class SignUpForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2', )
+        fields = ('username', 'password1', 'password2')
 ```
 In `main_app/views.py`:
 ```python
@@ -1010,9 +1010,9 @@ def register(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user = authenticate(username=user.username, password=user.password)
-            login(request, user)
-            return redirect('profile')
+            if user is not None:
+                login(request, user)
+                return redirect('profile')
     else:
         form = SignUpForm()
     return render(request, 'register.html', {'form': form})
@@ -1051,11 +1051,7 @@ In `main_app/templates/base.html`:
 <li><a href="{% url 'login_page' %}">Login</a></li>
 ```
 
-Try to create a new user, and it's entered in the database, but run into error
-
-![Signup error](./images/signup_error.png)
-
-The database confirms the user creation, need to figure out what's going wrong here.
+Try to create a new user, and check it's been entered in the database!
 <!-- 
 ICEBOX
 [] homepage
