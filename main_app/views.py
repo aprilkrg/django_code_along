@@ -6,11 +6,13 @@ from django.contrib.auth.decorators import login_required
 from .models import Show
 from .form import ShowForm, SignUpForm
 
+# Create your views here.
 def home(request):
-    print('HOME PAGE')
     return HttpResponse('<h1> (╯°□°）╯︵ ┻━┻ </h1>')
 
 def shows(request):
+    # print('SHOWS: ', Show.objects.all())
+    # return HttpResponse('<h1>TV Shows</h1>')
     shows = Show.objects.all()
     return render(request, 'shows_list.html', {'shows': shows})
 
@@ -21,10 +23,10 @@ def show_create(request):
         form.instance.user = request.user
         if form.is_valid():
             show = form.save()
-            return redirect('profile')
+            return redirect('shows')
     else:
         form = ShowForm()
-    context = {'form': form, 'header': 'Add new tv show', 'user': request.user}
+    context = {'form': form, 'header': 'Add new tv show'}
     return render(request, 'show_form.html', context)
 
 @login_required(login_url='/login/')
@@ -51,10 +53,6 @@ def show_delete(request, pk):
 def login_page(request):
     return render(request, 'login_form.html')
 
-def logout_view(request):
-    logout(request)
-    return redirect('shows')
-
 def profile_show(request):
     if request.user.is_authenticated:
         shows = Show.objects.filter(user_id=request.user.id)
@@ -73,11 +71,15 @@ def profile_show(request):
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             user = form.save()
-            user = authenticate(username=user.username, password=user.password)
-            login(request, user)
-            return redirect('profile')
+            if user is not None:
+                login(request, user)
+                return redirect('profile')
     else:
         form = SignUpForm()
     return render(request, 'register.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('shows')
