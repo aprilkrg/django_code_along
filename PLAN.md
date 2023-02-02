@@ -1053,13 +1053,19 @@ In `main_app/templates/base.html`:
 
 Try to create a new user, and check it's been entered in the database!
 <!-- 
-ICEBOX
-[] homepage
-[] css
-[] user registration customization (email)
-[] email user after registration  (Email Docs)[https://docs.djangoproject.com/en/4.0/topics/email/]
+SHOWS ICEBOX
 [] only user can edit their made shows
 [] user profile edit
+[] email user after registration  (Email Docs)[https://docs.djangoproject.com/en/4.0/topics/email/]
+[] homepage
+[] user registration customization (email)
 [] create show_creator model
 [] associate show_creator with show 
+[] css
 -->
+
+#
+
+# Add the Django REST Framework
+
+## Set up Django REST
