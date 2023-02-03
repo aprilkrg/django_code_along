@@ -1249,4 +1249,22 @@ REST_FRAMEWORK = {
 }
 ```
 
-Now going to localhost:8000 will show us the rest framework client
+Now test by running the server and going to localhost:8000 will show us the rest framework client.
+Next we'll test with a curl command
+```bash
+curl -H 'Accept: application/json' -u admin:admin http://127.0.0.1:8000/users/
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "email": "admin@example.com",
+            "groups": [],
+            "url": "http://127.0.0.1:8000/users/1/",
+            "username": "admin"
+        },
+    ]
+}
+```
+If that doesn't work then send a request in thunder client where you set the username and password under the auth tab. this should allow you to GET and POST. Make sure you end the urls with a slash or it'll have a bad time. Any user can send their authentication and preform full CRUD on any resource. (no protection of resources)
