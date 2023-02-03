@@ -1069,3 +1069,184 @@ SHOWS ICEBOX
 # Add the Django REST Framework
 
 ## Set up Django REST
+cd into project in terminal
+activate virtual environment 
+check git status is clean and server runs
+
+```bash
+source .env/bin/activate
+```
+In the virtual environment, install the djangorestframework package with pip3.
+```bash
+pip3 install djangorestframework
+```
+Create a new directory and app with the `startapp`command; whatever argument you provide after will be the name of the app. Then `cd`into it.
+```bash
+django-admin startapp api
+cd api
+```
+
+Now we'll save the newly installed package to the list of dependencies in `requirements.txt`: 
+```bash
+pip3 freeze > requirements.txt
+```
+
+That command should create a new .txt file and it's contents should look like the result from "pip3 list". 
+
+
+```
+cd ..
+
+```
+
+Now we'll save the newly installed package to the list of dependencies in `requirements.txt`: 
+```bash
+pip3 freeze > requirements.txt
+```
+
+That command should create a new .txt file and it's contents should look like the result from "pip3 list". 
+
+
+```bash
+touch api/serializers.py
+```
+
+In api/serializers.py:
+```python
+from django.contrib.auth.models import User, Group
+from rest_framework import serializers
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email', 'groups']
+
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['url', 'name']
+```
+
+In api/views.py:
+```python
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from rest_framework import permissions
+from api.serializers import UserSerializer, GroupSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
+```
+
+In show_collector/urls.py:
+```python
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework import routers
+from api import views
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # refactor urls for main_app
+    path('shows/', include('main_app.urls')),
+    # include urls for djangorest
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+]
+```
+
+We need to refactor our urls for the shows app. Take out the home route and remove "shows/" from any of the routes. For now we'll leave the user auth urls alone.
+
+In main_app/urls.py:
+```python
+urlpatterns = [
+    path('', views.shows, name='shows'),
+    path('add/', views.show_create, name='show_create_form'),
+    path('<int:pk>/edit/', views.show_edit, name='show_edit_form'),
+    path('<int:pk>/delete', views.show_delete, name='show_delete'),
+    path('login/', views.login_page, name='login_page'),
+    path('profile/', views.profile_show, name='profile'),
+    path('logout/', views.logout_view, name='logout'),
+    path('signup/', views.register, name='signup_form'),
+]
+```
+
+<!-- turns out this part is uncessary and what I was missing was registering the 'rest_framework' under installed apps -->
+<!-- 
+When there's an error at localhost:8000 try creating a new file.
+
+```bash
+mkdir api/templates
+mkdir api/templates/rest_framework
+touch api/templates/rest_framework/api.html
+```
+
+
+In api/templates/rest_framework/api.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>hello</h1>
+    <nav>
+        <a href="/shows">shows app</a>
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
+``` -->
+
+in showcollector/settings.py:
+```python
+INSTALLED_APPS = [
+    'main_app',
+    'rest_framework',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+```
+
+
+Add to show_collector/settings.py:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+```
+
+Now going to localhost:8000 will show us the rest framework client
