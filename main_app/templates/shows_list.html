@@ -1,0 +1,17 @@
+<div>
+    <h2>
+        TV Shows
+        <a href="add">(+)</a>
+    </h2>
+    <ul>
+        {% for show in shows %}
+            <li>
+               <a href="{{ show.id }}/edit"> 
+                    {{ show.title }}, 
+                </a>
+                {{ show.review }}/3
+                <a href="{{ show.id }}/delete">X</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
