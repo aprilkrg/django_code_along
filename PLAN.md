@@ -229,8 +229,8 @@ class Show(models.Model):
 
 Here are a few notes:
 - [Django documentation](https://docs.djangoproject.com/en/4.0/ref/models/fields/#module-django.db.models.fields)
-- not sure if the nested class of Rating and the review field will work?
-- might need to add a "auto_now_add=False" to the premiere_date field so it doesn't overwrite the date on save
+- Rating is a nested class of Show that is used to create the `review` property
+- need to add a "auto_now_add=False" to the premiere_date field so it doesn't overwrite the date on save
 
 The fields that we give the model will be represented as columns in our database after the migration. We need to translate the code we wrote to a schema for our database, which we will do by using migrations.
 Running migrations has two steps: `makemigrations` and `migrate`
