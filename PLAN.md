@@ -1060,6 +1060,14 @@ In `main_app/templates/base.html`:
 ```
 
 Try to create a new user, and check it's been entered in the database!
+
+Use that same style of setting the url in the href, and pass a pk there.
+In `main_app/templates/profile.html`:
+```html
+href="{% url 'show_edit_form' pk=show.id %}"
+```
+We'll be using the `name` property we've set in the urls file, and set the url parameter by assigning it value in the curlies.
+
 <!-- 
 ICEBOX
 [] homepage
