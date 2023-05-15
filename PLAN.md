@@ -103,7 +103,7 @@ python3 manage.py startapp main_app
 
 Now there is another directory at the same level as "main_project" that is called "main_app".
 
-To use "main_app" we need to include it in the list of "INSTALLED_APPS" in the settings.py file.
+To use "main_app" we need to include it in the list of "INSTALLED_APPS" in main_project/settings.py file.
 ![Installed Apps](./images/installed-apps.png)
 
 Now we can see if our project starts up! Run `python3 manage.py runserver`
@@ -158,7 +158,7 @@ Create a file for "main_app"'s urls:
 touch main_app/urls.py
 ```
 
-Import the include keyword from `django.urls`, and add the path to main_app urls in "show_collector_project/urls.py":
+Import the include keyword from `django.urls`, and add the path to main_app urls in "main_project/urls.py":
 
 ![Url Patterns](./images/urlpatterns.png)
 This will mount any routes created in "main_app".
