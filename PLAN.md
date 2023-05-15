@@ -18,7 +18,7 @@ Create a virtual environment:
 ```bash
 python3 -m venv .env
 ```
-We'll use the built in `venv` command and call out virtual environment ".env".
+We'll use the built in `venv` command and call our virtual environment ".env".
 
 *there are other packages like anaconda which can create a virtual environment for you*
 
@@ -82,18 +82,26 @@ pip3 install -r requirements.txt
 
 Use the "django-admin" command to generate some of the project: 
 ```bash
-django-admin startproject show_collector_project . 
+django-admin startproject main_project . 
 ```
-
-We'll create and collect tv-shows for our CRUD, so let's name our project "show_collector_project".
 This command will create a directory of the same name as the project name argument provided in the last command, as well as a "manage.py" file. This app is our web application.
 
-We'll also create a different app where we can implement the main functionality of collecting tv-shows. We'll name this app "main_app": 
+
+From the django documentation:
+```
+Projects vs. apps
+
+What’s the difference between a project and an app? An app is a web application that does something – e.g., a blog system, a database of public records or a small poll app. A project is a collection of configuration and apps for a particular website. A project can contain multiple apps. An app can be in multiple projects.
+```
+A Django project may use multiple applications on the same website, we'll choose to call our project "main_project" and our first app "main_app". As long as we don't call these directories "django" or "test" we can name it whatever we like. 
+
+
+We'll also create an app where we can implement the main functionality of collecting tv-shows. We'll name this app "main_app": 
 ```bash
 python3 manage.py startapp main_app
 ```
 
-Now there is another directory at the same level as "show_collector_project" that is called "main_app".
+Now there is another directory at the same level as "main_project" that is called "main_app".
 
 To use "main_app" we need to include it in the list of "INSTALLED_APPS" in the settings.py file.
 ![Installed Apps](./images/installed-apps.png)
